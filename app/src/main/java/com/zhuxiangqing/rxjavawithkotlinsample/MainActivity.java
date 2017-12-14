@@ -10,6 +10,7 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -19,6 +20,8 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
@@ -309,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        //take
+        //take 弱水三千 只取一瓢饮
         findViewById(R.id.take)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -319,9 +322,114 @@ public class MainActivity extends AppCompatActivity {
                                 .subscribe(new Consumer<Integer>() {
                                     @Override
                                     public void accept(Integer integer) throws Exception {
+                                        Log.d(RxjavaTest.TAG, "accept: " + integer);
+                                    }
+                                });
+                    }
+                });
+
+        //Just
+        findViewById(R.id.just)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Observable.just(test[0])
+                                .subscribe(new Consumer<Integer>() {
+                                    @Override
+                                    public void accept(Integer integer) throws Exception {
 
                                     }
-                                })
+                                });
+                    }
+                });
+
+        //Single
+        findViewById(R.id.single)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //?Single的功能 Observable都能实现吗？
+                        //是的；
+                        //Single 和 Observable 可以相互转换
+                        //  toObservable()
+                        Single.just(test[0])
+                                .subscribe(new SingleObserver<Integer>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+
+                                    }
+
+                                    @Override
+                                    public void onSuccess(Integer integer) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+                                });
+                    }
+                });
+
+        //Debounce 去掉发送间隔 过短的项目
+        findViewById(R.id.debounce)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //可以通过filter实现debounce的功能吗；
+                        Observable
+                                .fromArray(test)
+                                .debounce(100, TimeUnit.MILLISECONDS)
+                                .subscribe(new Consumer<Integer>() {
+                                    @Override
+                                    public void accept(Integer integer) throws Exception {
+                                        Log.d(RxjavaTest.TAG, "accept: " + integer);
+                                    }
+                                });
+                    }
+                });
+
+        //Defer Observable对象延迟创建的过程；
+        findViewById(R.id.defer)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Observable.defer(new Callable<ObservableSource<Integer>>() {
+                            @Override
+                            public ObservableSource<Integer> call() throws Exception {
+                                return Observable.fromArray(test);
+                            }
+                        }).subscribe(new Consumer<Integer>() {
+                            @Override
+                            public void accept(Integer integer) throws Exception {
+
+                            }
+                        });
+                    }
+                });
+
+
+        //last
+        findViewById(R.id.last)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Observable.fromArray(test)
+                                .last(2)
+                                .subscribe(new Consumer<Integer>() {
+                                    @Override
+                                    public void accept(Integer integer) throws Exception {
+                                        Log.e(RxjavaTest.TAG, "accept: " + integer);
+                                    }
+                                });
+                    }
+                });
+
+        findViewById(R.id.merge)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                     }
                 });
     }

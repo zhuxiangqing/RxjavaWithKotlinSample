@@ -14,4 +14,10 @@
     <string name="activity_main_button_do_on_next">doOnNext</string>
     <string name="activity_main_button_skip_text">skip</string>
     <string name="activity_main_button_take_text">take</string>
+    <string name="activity_main_button_just_text">just</string>
+    <string name="activity_main_button_single_text">single</string>
+    <string name="activity_main_button_debounce_text">debounce</string>
+    <string name="activity_main_button_defer_text">defer</string>
+    <string name="activity_main_button_last_text">last</string>
+    <string name="activity_main_button_merge_text">merge</string>
 </resources>

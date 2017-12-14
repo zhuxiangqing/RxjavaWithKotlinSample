@@ -90,6 +90,49 @@
                 android:layout_height="wrap_content"
                 android:text="@string/activity_main_button_take_text"
                 app:layout_constraintTop_toBottomOf="@id/skip" />
+
+
+            <Button
+                android:id="@+id/just"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_just_text"
+                app:layout_constraintTop_toBottomOf="@id/take" />
+
+            <Button
+                android:id="@+id/single"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_single_text"
+                app:layout_constraintTop_toBottomOf="@id/just" />
+
+            <Button
+                android:id="@+id/debounce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_debounce_text"
+                app:layout_constraintTop_toBottomOf="@id/single" />
+
+            <Button
+                android:id="@+id/defer"
+                android:layout_width="wrap_contentw"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_defer_text"
+                app:layout_constraintTop_toBottomOf="@id/debounce" />
+
+            <Button
+                android:id="@+id/last"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_last_text"
+                app:layout_constraintTop_toBottomOf="@id/defer" />
+
+            <Button
+                android:id="@+id/merge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_merge_text"
+                app:layout_constraintTop_toBottomOf="@id/last" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
