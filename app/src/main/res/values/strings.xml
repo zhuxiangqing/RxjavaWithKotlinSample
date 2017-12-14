@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">RxjavaWithKotlinSample</string>
+    <string name="activity_main_button_create_text">Create</string>
+    <string name="activity_main_button_map_text">Map</string>
+    <string name="activity_main_button_zip_text">zip</string>
+    <string name="activity_main_button_concat_text">concat</string>
+    <string name="activity_main_button_flatmap_text">flatMap</string>
+    <string name="activity_main_button_filter_text">filter</string>
+    <string name="android_main_button_timer_text">timer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="activity_main_button_intervel_text">intervel</string>
+    <string name="activity_main_button_do_on_next">doOnNext</string>
+    <string name="activity_main_button_skip_text">skip</string>
+    <string name="activity_main_button_take_text">take</string>
 </resources>
