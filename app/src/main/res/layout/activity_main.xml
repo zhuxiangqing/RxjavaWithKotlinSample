@@ -115,7 +115,7 @@
 
             <Button
                 android:id="@+id/defer"
-                android:layout_width="wrap_contentw"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/activity_main_button_defer_text"
                 app:layout_constraintTop_toBottomOf="@id/debounce" />
@@ -133,6 +133,34 @@
                 android:layout_height="wrap_content"
                 android:text="@string/activity_main_button_merge_text"
                 app:layout_constraintTop_toBottomOf="@id/last" />
+
+            <Button
+                android:id="@+id/reduce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_reduce_text"
+                app:layout_constraintTop_toBottomOf="@id/merge" />
+
+            <Button
+                android:id="@+id/scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_scan_text"
+                app:layout_constraintTop_toBottomOf="@id/reduce" />
+
+            <Button
+                android:id="@+id/window"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_window_text"
+                app:layout_constraintTop_toBottomOf="@id/scan" />
+
+            <Button
+                android:id="@+id/network"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_main_button_network_text"
+                app:layout_constraintTop_toBottomOf="@id/window" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>

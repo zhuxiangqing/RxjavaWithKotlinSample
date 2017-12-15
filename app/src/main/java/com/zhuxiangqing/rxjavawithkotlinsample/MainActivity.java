@@ -1,25 +1,26 @@
 package com.zhuxiangqing.rxjavawithkotlinsample;
 
-import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.GsonBuilder;
+import com.zhuxiangqing.rxjavawithkotlinsample.entity.NewsEntity;
+
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -29,10 +30,17 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static com.zhuxiangqing.rxjavawithkotlinsample.RxjavaTest.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
     private ContentFragment contentFragment;
+    private static final String APP_KEY = "93ba680b61c343b8a0777a045c0faab0";
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         //FLatMap not static
+        //具体优势并不清楚啊 能用map解决就用map吧 次级选择flatMap;
         findViewById(R.id.flatMap)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -426,12 +435,148 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        //Merge 通过Merge来连续使用多个发射器 多个发射器无先后顺序
         findViewById(R.id.merge)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Observable
+                                .merge(
+                                        Observable.fromArray(test),
+                                        Observable.fromArray(test0)
+                                )
+                                .subscribe(new Consumer<Integer>() {
+                                    @Override
+                                    public void accept(Integer integer) throws Exception {
+                                        Log.e(RxjavaTest.TAG, "accept: " + integer + "  " + System.currentTimeMillis());
+                                    }
+                                });
                     }
                 });
+
+        //Reduce
+        findViewById(R.id.reduce)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Observable
+                                .fromArray(test)
+                                //return a Maybe
+                                .reduce(new BiFunction<Integer, Integer, Integer>() {
+                                    @Override
+                                    public Integer apply(Integer integer, Integer integer2) throws Exception {
+                                        Log.d(RxjavaTest.TAG, "Number1: " + integer + "Number2: " + integer2);
+                                        return integer + integer2;
+                                    }
+                                })
+                                .subscribe(new Consumer<Integer>() {
+                                    @Override
+                                    public void accept(Integer integer) throws Exception {
+                                        Log.d(RxjavaTest.TAG, "accept: " + integer);
+                                    }
+                                });
+                    }
+                });
+
+        //scan  scan 和 Reduce相似 但是Scan的结果每步都会打出：
+        findViewById(R.id.scan)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Observable
+                                .fromArray(test)
+                                .scan(new BiFunction<Integer, Integer, Integer>() {
+                                    @Override
+                                    public Integer apply(Integer integer, Integer integer2) throws Exception {
+                                        return integer * integer2;
+                                    }
+                                })
+                                .subscribe(new Consumer<Integer>() {
+                                    @Override
+                                    public void accept(Integer integer) throws Exception {
+                                        Log.e(RxjavaTest.TAG, "accept: " + integer);
+                                    }
+                                });
+                    }
+                });
+
+        //window
+        findViewById(R.id.window)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Observable
+                                .zip(Observable.fromArray(test),
+                                        Observable.interval(0, 1, TimeUnit.SECONDS),
+                                        new BiFunction<Integer, Long, Integer>() {
+                                            @Override
+                                            public Integer apply(Integer integer, Long aLong) throws Exception {
+                                                return integer;
+                                            }
+                                        })
+                                .window(3)
+                                .subscribe(new Consumer<Observable<Integer>>() {
+                                    @Override
+                                    public void accept(Observable<Integer> integerObservable) throws Exception {
+                                        integerObservable.subscribe(new Consumer<Integer>() {
+                                            @Override
+                                            public void accept(Integer integer) throws Exception {
+                                                Log.d(TAG, "accept: " + integer);
+                                            }
+                                        });
+                                    }
+                                });
+                    }
+                });
+
+        //network
+        //
+        findViewById(R.id.network)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Observable
+                                .create(new ObservableOnSubscribe<NewsEntity>() {
+                                    @Override
+                                    public void subscribe(ObservableEmitter<NewsEntity> e) throws Exception {
+                                        OkHttpClient client = new OkHttpClient.Builder()
+                                                .build();
+                                        Request request = new Request.Builder()
+                                                .url("http://v.juhe.cn/toutiao/index?key=93ba680b61c343b8a0777a045c0faab0")
+                                                .get()
+                                                .build();
+                                        Response response = client.newCall(request).execute();
+                                        NewsEntity entity;
+                                        try (Reader reader = response.body().charStream()) {
+                                            entity = new GsonBuilder().create().fromJson(reader, NewsEntity.class);
+                                            if (null != entity) {
+                                                e.onNext(entity);
+                                            }
+                                            e.onComplete();
+                                        } catch (Exception ignored) {
+                                            e.onError(ignored);
+                                        }
+                                    }
+                                })
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        new Consumer<NewsEntity>() {
+                                            @Override
+                                            public void accept(NewsEntity newsEntity) throws Exception {
+                                                Log.d(TAG, "accept: " + newsEntity.toString());
+                                            }
+                                        },
+                                        new Consumer<Throwable>() {
+                                            @Override
+                                            public void accept(Throwable throwable) throws Exception {
+                                                Log.e(TAG, "accept: " + throwable.getMessage());
+                                            }
+                                        });
+                    }
+                });
+
     }
 
 

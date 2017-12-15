@@ -20,4 +20,8 @@
     <string name="activity_main_button_defer_text">defer</string>
     <string name="activity_main_button_last_text">last</string>
     <string name="activity_main_button_merge_text">merge</string>
+    <string name="activity_main_button_reduce_text">reduce</string>
+    <string name="activity_main_button_scan_text">scan</string>
+    <string name="activity_main_button_window_text">window</string>
+    <string name="activity_main_button_network_text">network</string>
 </resources>
